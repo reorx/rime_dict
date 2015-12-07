@@ -9,9 +9,10 @@ from StringIO import StringIO
 
 
 TAB = '	'
+TEMPLATE_WITH_PRIORITY = '{}	{}	{}'
 
 
-def parse_userdict(filepath):
+def parse_dict(filepath):
     head_lines = []
     body_lines = []
     with open(filepath, 'r') as f:
@@ -29,7 +30,7 @@ def parse_userdict(filepath):
     return head_lines, body_lines
 
 
-def parse_userdict_line(line):
+def parse_dict_line(line):
     """Format:
     A Word	a word	1
     """
@@ -40,27 +41,31 @@ def parse_userdict_line(line):
     return word, input, priority
 
 
-class UserDict(object):
-    """A Set like container for userdict items"""
+class DictSet(object):
+    """A Set like container for dict items"""
 
     def __init__(self, lines):
-        self.userdict = {}
+        self.dictset = {}
         for i in lines:
-            word, input, priority = parse_userdict_line(i)
+            word, input, priority = parse_dict_line(i)
             if word:
-                self.userdict[input] = (word, input, priority)
+                self.dictset[input] = (word, input, priority)
 
     def get(self, input):
-        return self.userdict.get(input)
+        return self.dictset.get(input)
 
     def add(self, word, input, priority):
-        self.userdict[input] = (word, input, priority)
+        self.dictset[input] = (word, input, priority)
 
     def delete(self, input):
-        del self.userdict[input]
+        del self.dictset[input]
 
-    def sorted_list(self):
-        return sorted(self.userdict.itervalues(), key=lambda x: x[0].decode('utf8'))
+    def iter_lines(self, sort=True):
+        iterator = self.dictset.itervalues()
+        if sort:
+            iterator = sorted(iterator, key=lambda x: x[0].decode('utf8'))
+        for cols in iterator:
+            yield TEMPLATE_WITH_PRIORITY.format(*cols) + '\n'
 
 
 punc_table = {i: None for i in xrange(sys.maxunicode)

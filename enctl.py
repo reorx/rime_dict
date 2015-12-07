@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import itertools
 import click
 import parser
 
@@ -14,12 +15,12 @@ def cli():
 
 @cli.command('list')
 def cmd_list():
-    head, body = parser.parse_userdict(EN_FILEPATH)
+    head, body = parser.parse_dict(EN_FILEPATH)
     count = 0
 
     print 'All en words:'
     for line in body:
-        word, input, priority = parser.parse_userdict_line(line)
+        word, input, priority = parser.parse_dict_line(line)
         if word:
             print '{}	{}'.format(word, input)
             count += 1
@@ -31,7 +32,7 @@ def cmd_list():
 @click.argument('input')
 @click.argument('priority', default=1)
 def cmd_add(word, input, priority):
-    """Add a word into userdict:
+    """Add a word into dict:
 
     \b
     WORD   the word that pointed by input
@@ -40,10 +41,10 @@ def cmd_add(word, input, priority):
     """
     print word, input, priority
 
-    head, body = parser.parse_userdict(EN_FILEPATH)
+    head, body = parser.parse_dict(EN_FILEPATH)
 
-    ud = parser.UserDict(body)
-    item = ud.get(input)
+    ds = parser.DictSet(body)
+    item = ds.get(input)
     confirmed = False
     if item:
         if click.confirm('Item already exists: {} {} {}, do you want to overwrite it?'.format(*item)):
@@ -52,9 +53,17 @@ def cmd_add(word, input, priority):
         confirmed = True
 
     if confirmed:
-        ud.add(word, input, priority)
+        ds.add(word, input, priority)
 
     # Write back
+    #with open('/tmp/a.txt', 'w') as f:
+    with open(EN_FILEPATH, 'w') as f:
+        f.writelines(
+            itertools.chain(
+                head,
+                ds.iter_lines()
+            )
+        )
 
 
 if __name__ == '__main__':

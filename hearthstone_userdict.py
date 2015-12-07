@@ -43,7 +43,7 @@ if __name__ == '__main__':
     with open(OUTPUT_FILEPATH, 'w') as f:
         f.writelines(
             itertools.chain(
-                parser.generate_head_lines('luna_pinyin.hs', '1.0'),
-                parser.iter_lines(cardset, priority=10)
+                parser.generate_head_lines('luna_pinyin.hs', '1.1'),
+                parser.iter_lines(cardset, priority=1)
             )
         )

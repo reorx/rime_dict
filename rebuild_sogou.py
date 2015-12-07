@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-INPUT_FILENAME = 'sogou_userdict.txt'
-OUTPUT_FILENAME = 'sogou_userdict.1.txt'
+INPUT_FILENAME = 'sogou_userdb.txt'
+OUTPUT_FILENAME = 'sogou_userdb.1.txt'
 
 
 if __name__ == '__main__':
