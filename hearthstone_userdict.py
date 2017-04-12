@@ -29,7 +29,11 @@ if __name__ == '__main__':
     abc_regex = re.compile(r'[a-zA-Z]')
 
     for card in cards:
-        _name = card['name']
+        _name = card.get('name')
+        if not _name:
+            continue
+        if len(_name) > 9:
+            continue
 
         # Remove puncturator
         name = parser.remove_punc(_name)
@@ -44,6 +48,8 @@ if __name__ == '__main__':
             continue
 
         cardset.add(name)
+
+    print 'collected {} card names'.format(len(cardset))
 
     if cmd == 'test':
         for i in cardset:
